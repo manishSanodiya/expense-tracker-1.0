@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import './LoginForm.css'; // Import your CSS file
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, } from 'react-router-dom';
 import axios from 'axios';
 
 const Login = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
 
   const [password, setPassword] = useState('');
@@ -22,6 +23,7 @@ const Login = () => {
       console.log(res.data.message)
      setEmail('')
      setPassword('')
+     navigate("/expense")
   }catch(error){
     console.log('error logging in ',error.message)
   }

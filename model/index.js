@@ -20,8 +20,9 @@ db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
 db.users = require("./userModel")(sequelize,DataTypes)
+db.expenses = require("./expenseModel")(sequelize,DataTypes)
 
-db.sequelize.sync()
+db.sequelize.sync({force: false})
 .then(()=>{
     console.log('synced');
 })
