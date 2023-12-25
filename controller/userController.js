@@ -1,6 +1,7 @@
 const db = require('../model/index');
 const  User = db.users;
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 
 
 function stringValidator(string){
@@ -9,6 +10,10 @@ function stringValidator(string){
     }else{
         return false
     }
+}
+
+function generateAccessToken(id,name){
+    return jwt.sign({userId:id,name:name},"SEcretPrivateKey")
 }
 
 const addUser = async (req,res)=>{
@@ -32,7 +37,7 @@ const login = async(req,res)=>{
     try{
         const {email,password} = req.body;
         if(stringValidator(email)||stringValidator(password)){
-            return res.status(400).json({err:"invalid input value"})
+            return res.status(400).json({err:"invalid input value",})
         }
         
         const user = await User.findAll({where:{email}})
@@ -42,7 +47,7 @@ const login = async(req,res)=>{
                    throw new Error( 'something went wrong')
                 }
                 if(response===true){
-                    res.status(200).json({success : true, message:"user logged in successfully"})
+                    res.status(200).json({success : true, message:"user logged in successfully",token:generateAccessToken(user[0].id,user[0].username)})
                 }else{
                     return res.status(500).json({success : false, message: "password is incorrrect"});
                 }

@@ -4,12 +4,19 @@ import React, { useEffect, useState } from "react";
 const Expense = () => {
   const [name, setName] = useState("");
   const [type, setType] = useState("");
-  const [price, setPrice] = useState();
+  const [price, setPrice] = useState(0);
   const [list,setList] = useState([])
   const submitHandler =async(e)=>{
-    e.preventDefault();
     try{
-        await axios.post('api/expense/addExpense',{name,price,type})
+        e.preventDefault();
+        const obj = {
+            name,
+            price,
+            type
+        }
+      const token = localStorage.getItem("token")
+   
+        await axios.post('api/expense/addExpense',obj,{headers:{"Authorization":token}})
         console.log("expense added")
         getExpense()
     }catch(err){
@@ -19,7 +26,9 @@ const Expense = () => {
   }
 
   const getExpense = async()=>{
-    const res = await axios.get('api/expense/getExpense')
+    const token = localStorage.getItem("token")
+    
+    const res = await axios.get('api/expense/getExpense',{headers:{"Authorization":token}})
     setList(res.data)
 
   }
@@ -30,7 +39,8 @@ const Expense = () => {
 
   const deleteHandler=async(id)=>{
      try{
-        await axios.delete(`api/expense/deleteExpense/${id}`)
+        const token = localStorage.get('token')
+        await axios.delete(`api/expense/deleteExpense/${id}`,{headers:{"Authorization":token}})
         console.log("deleted")
         getExpense()
      }catch(err){

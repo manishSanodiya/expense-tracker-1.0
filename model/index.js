@@ -22,7 +22,10 @@ db.Sequelize = Sequelize;
 db.users = require("./userModel")(sequelize,DataTypes)
 db.expenses = require("./expenseModel")(sequelize,DataTypes)
 
-db.sequelize.sync({force: false})
+db.users.hasMany(db.expenses);
+db.expenses.belongsTo(db.users);
+
+db.sequelize.sync({force: true})
 .then(()=>{
     console.log('synced');
 })

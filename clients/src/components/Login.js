@@ -20,9 +20,10 @@ const Login = () => {
     e.preventDefault();
   try{
     const res = await axios.post('api/user/login',logInfo)
-      console.log(res.data.message)
+      console.log(res.data.token)
      setEmail('')
      setPassword('')
+       localStorage.setItem("token",res.data.token)
      navigate("/expense")
   }catch(error){
     console.log('error logging in ',error.message)
