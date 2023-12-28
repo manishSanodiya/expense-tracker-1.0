@@ -3,14 +3,13 @@ const db = require('../model/index');
 const User = db.users;
 
 const secretKey = "SEcretPrivateKey";
+
 const userAuthentication = async(req,res,next)=>{
     try{
         const token = req.header("Authorization");
-        console.log("token ",token);
-        const verify =jwt.verify(token,secretKey);
-        console.log("user Id >>>>>>>>",verify.userId);
-       const user= await User.findByPk(verify.userId)
-           
+        console.log(token)
+        const varify =jwt.verify(token,secretKey);
+       const user= await User.findByPk(varify.userId)
             req.user = user;
             next();
        

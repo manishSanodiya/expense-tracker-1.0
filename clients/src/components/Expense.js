@@ -1,87 +1,186 @@
+//   const premiumHandler= async()=>{
+//     console.log('premium handler')
+//      try{    const token = localStorage.getItem("token");
+
+//      const res = await axios.get('api/purchase/premiummembership',{ headers: { "Authorization": token } })
+//      console.log('premium handle')
+//      console.log(res);
+//   }
+//     catch(err){
+//       console.log('error premium in expense',err)
+//     }
+    // var options = {
+    //   "key": res.data.key_id,
+    //   "order_id": res.data.order.id,
+    //   "handler":async function(res){
+    //     await axios.post('api/purchase/updatetransactionstatus',{
+    //       order_id: options.order.id,
+    //       payment_id: res.razorpay_payment_id,
+    //     },{ headers: { "Authorization": token } })
+
+    //     alert("you are a premium user now")
+    //   }
+    // }
+
+//   }
+
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import "./expense.css";
+
 
 const Expense = () => {
   const [name, setName] = useState("");
   const [type, setType] = useState("");
   const [price, setPrice] = useState(0);
-  const [list,setList] = useState([])
-  const submitHandler =async(e)=>{
-    try{
-        e.preventDefault();
-        const obj = {
-            name,
-            price,
-            type
-        }
-      const token = localStorage.getItem("token")
-   
-        await axios.post('api/expense/addExpense',obj,{headers:{"Authorization":token}})
-        console.log("expense added")
-        getExpense()
-    }catch(err){
-        console.log("error in adding expense",err.message)
+  const [list, setList] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const handleInputChange = useCallback((e, setValue) => {
+    setValue(e.target.value);
+  }, []);
+
+  const clearInputs = useCallback(() => {
+    setName("");
+    setPrice(0);
+    setType("");
+  }, []);
+
+  const submitHandler = async (e) => {
+    e.preventDefault();
+    try {
+      const obj = { name, price, type };
+      const token = localStorage.getItem("token");
+      await axios.post("api/expense/addExpense", obj, {
+        headers: { Authorization: token },
+      });
+      console.log("Expense added");
+      clearInputs();
+      getExpense();
+    } catch (err) {
+      console.error("Error adding expense:", err.message);
+      setError("Error adding expense. Please try again.");
     }
-   
-  }
+  };
 
-  const getExpense = async()=>{
-    const token = localStorage.getItem("token")
-    
-    const res = await axios.get('api/expense/getExpense',{headers:{"Authorization":token}})
-    setList(res.data)
+  const getExpense = useCallback(async () => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.get("api/expense/getExpense", {
+        headers: { Authorization: token },
+      });
+      setList(res.data);
+    } catch (err) {
+      console.error("Error fetching expenses:", err.message);
+      setError("Error fetching expenses. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
-  }
+  const deleteHandler = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.delete(`api/expense/deleteExpense/${id}`, {
+        headers: { Authorization: token },
+      });
+      console.log("Deleted");
+      getExpense();
+    } catch (err) {
+      console.error("Delete did not happen", err.message);
+      setError("Error deleting expense. Please try again.");
+    }
+  };
 
-  useEffect(()=>{
-    getExpense()
-  },[])
+  const premiumHandler = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.get("api/purchase/premiummembership", {
+        headers: { Authorization: token },
+      });
+      console.log("premium handler");
+      console.log(res);
+    } catch (err) {
+      console.log("error premium in expense", err);
+    }
 
-  const deleteHandler=async(id)=>{
-     try{
-        const token = localStorage.get('token')
-        await axios.delete(`api/expense/deleteExpense/${id}`,{headers:{"Authorization":token}})
-        console.log("deleted")
-        getExpense()
-     }catch(err){
-        console.log('delete not happen' ,err.message)
-     }
-  }
+}
+
+  
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      getExpense();
+    }
+  }, [getExpense]);
+
   return (
     <div>
-      <form onSubmit={submitHandler}>
+      <form className="form" onSubmit={submitHandler}>
+        <label>name of expense</label>
         <input
           type="text"
-          name="name"
-          onChange={(e) => {
-            setName(e.target.value);
-          }}
+          value={name}
+          onChange={(e) => handleInputChange(e, setName)}
+          className="form-input"
+          placeholder="name"
         />
+        <label>price of expense</label>
         <input
           type="number"
-          name="name"
-          onChange={(e) => {
-            setPrice(e.target.value);
-          }}
+          value={price}
+          onChange={(e) => handleInputChange(e, setPrice)}
+          className="form-input"
         />
         <label htmlFor="type">Choose type of expense: </label>
-
-        <select name="type" id="type"  value={type} onChange={(e)=>setType(e.target.value)}>
-          <option value="grocery">Grocery</option>
-          <option value="medical">Medical</option>
-          <option value="food">Food</option>
-          <option value="games">Games</option>
+        <select
+          name="type"
+          id="type"
+          value={type}
+          onChange={(e) => setType(e.target.value)}
+          className="form-select"
+        >
+          <option disabled selected value="">
+            Select Item
+          </option>
+          <option value="Groceries">Groceries</option>
+          <option value="Utilities">Utilities</option>
+          <option value="Rent">Rent</option>
+          <option value="Fuel">Fuel</option>
+          <option value="Clothes">Clothes</option>
+          <option value="Drinks">Drinks</option>
+          <option value="Food">Food</option>
+          <option value="Education">Education</option>
+          <option value="Gifts">Gifts</option>
         </select>
         <button type="submit">Add Expense</button>
       </form>
-      <div>
-        <h1>Expenses :</h1>
-        <ul>
-        {list.map((item)=>{
-            return <li key={item.id}>{item.name} {item.price} {item.type} <button onClick={()=>deleteHandler(item.id)}>delete item</button></li>
-        })}
-        </ul>
-      </div>
+      {!loading && (
+        <p className="premium" onClick={premiumHandler}>
+          for premium features click here..<button>Premium</button>
+        </p>
+      )}
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <div className="list-container">
+          <h1>Expenses :</h1>
+          {error && <p>{error}</p>}
+          <ul>
+            {list.map((item) => (
+              <li key={item.id} className="list-items">
+                {item.name} {item.price} {item.type}
+                <button onClick={() => deleteHandler(item.id)}>
+                  delete item
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 };
