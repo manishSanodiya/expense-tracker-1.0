@@ -12,8 +12,8 @@ function stringValidator(string){
     }
 }
 
-function generateAccessToken(id,name){
-    return jwt.sign({userId:id,name:name},"SEcretPrivateKey")
+function generateAccessToken(id){
+    return jwt.sign({userId:id},"SEcretPrivateKey")
 }
 
 const addUser = async (req,res)=>{
@@ -47,7 +47,7 @@ const login = async(req,res)=>{
                    throw new Error( 'something went wrong')
                 }
                 if(response===true){
-                    res.status(200).json({success : true, message:"user logged in successfully",token:generateAccessToken(user[0].id,user[0].username)})
+                    res.status(200).json({success : true, message:"user logged in successfully",token:generateAccessToken(user[0].id)})
                 }else{
                     return res.status(500).json({success : false, message: "password is incorrrect"});
                 }

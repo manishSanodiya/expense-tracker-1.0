@@ -9,33 +9,46 @@ const key_id = process.env.RAZORPAY_KEY_ID;
 const key_secret = process.env.RAZORPAY_KEY_SECRET;
 
 
-const premiummembership = async (request, response, next) => {
+const premiummembership = async (req, res, next) => {
     try {
-        const rzpintance = new Razorpay({
+        var rzp = new Razorpay({
             key_id: key_id,
             key_secret: key_secret
-        })
-        var options = {
-            amount: 50000,
+        });
+        const amount = 3000;
+        const options = {
+            amount: amount,
             currency: "INR",
+            receipt: "any unique id for every order",
         };
-        const orderDetails = await rzpintance.orders.create(options);
-        const user = request.user;
-        const { id, status } = orderDetails;
-        await user.createOrder({
-            orderid: id,
-            status: status,
-        })
-        response.status(200).json({ key_id: key_id, orderid: id, user: user });
 
-    } catch (error) {
-        console.log(error);
+        rzp.orders.create(options, async (err, order) => {
+            if (err) {
+                console.log("Error creating order:", err);
+                return res.status(500).json({ error: "Failed to create order" });
+            }
+
+            try {
+                // Assuming req.user.createOrder is an asynchronous function
+                await req.user.createOrder({ orderid: order.id, status: "PENDING" });
+                return res.status(201).json({ order, key_id: rzp.key_id });
+            } catch (createOrderErr) {
+                console.log("Error creating user order:", createOrderErr);
+                return res.status(500).json({ error: "Failed to create user order" });
+            }
+        });
+    } catch (err) {
+        console.log("Error in premiummembership:", err);
+        res.status(403).json({ message: "Something went wrong", error: err });
     }
-}
-const updatetransactionstatus = async (request, response, next) => {
-    const { order_id, payment_id } = request.body;
+};
 
+const updatetransactionstatus = async (request, response, next) => {
     try {
+         const { order_id, payment_id } = request.body;
+    console.log("<<<<<<<<<<<<<<<<<<<<<<<manis>>>>>>>>>>>>>>>>>>>>>",request.body)
+
+   
         const user = request.user;
         user.ispremiumuser = true;
         await Promise.all([

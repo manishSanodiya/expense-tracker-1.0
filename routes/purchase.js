@@ -8,5 +8,5 @@ const router = express.Router();
 
 router.get('/premiummembership',userAuthentication.userAuthentication,purchaseController.premiummembership)
 
-
+router.post('/updatetransaction',userAuthentication.userAuthentication,purchaseController.updatetransactionstatus)
 module.exports = router;

@@ -18,7 +18,11 @@ module.exports = (sequelize,DataTypes) =>{
         password:{
             type: DataTypes.STRING,
             allowNull: false,
+        },
+        ispremiumuser:{
+            type:DataTypes.BOOLEAN
         }
+
     });
     return User;
 } 
