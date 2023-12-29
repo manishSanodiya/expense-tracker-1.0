@@ -1,32 +1,9 @@
-//   const premiumHandler= async()=>{
-//     console.log('premium handler')
-//      try{    const token = localStorage.getItem("token");
 
-//      const res = await axios.get('api/purchase/premiummembership',{ headers: { "Authorization": token } })
-//      console.log('premium handle')
-//      console.log(res);
-//   }
-//     catch(err){
-//       console.log('error premium in expense',err)
-//     }
-    // var options = {
-    //   "key": res.data.key_id,
-    //   "order_id": res.data.order.id,
-    //   "handler":async function(res){
-    //     await axios.post('api/purchase/updatetransactionstatus',{
-    //       order_id: options.order.id,
-    //       payment_id: res.razorpay_payment_id,
-    //     },{ headers: { "Authorization": token } })
-
-    //     alert("you are a premium user now")
-    //   }
-    // }
-
-//   }
 
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import "./expense.css";
+
 
 
 const Expense = () => {
@@ -53,7 +30,7 @@ const Expense = () => {
       const obj = { name, price, type };
       const token = localStorage.getItem("token");
       await axios.post("api/expense/addExpense", obj, {
-        headers: { Authorization: token },
+        headers: {"Authorization": token },
       });
       console.log("Expense added");
       clearInputs();
@@ -69,7 +46,7 @@ const Expense = () => {
     try {
       const token = localStorage.getItem("token");
       const res = await axios.get("api/expense/getExpense", {
-        headers: { Authorization: token },
+        headers: { "Authorization": token },
       });
       setList(res.data);
     } catch (err) {
@@ -84,7 +61,7 @@ const Expense = () => {
     try {
       const token = localStorage.getItem("token");
       await axios.delete(`api/expense/deleteExpense/${id}`, {
-        headers: { Authorization: token },
+        headers: { "Authorization": token },
       });
       console.log("Deleted");
       getExpense();
@@ -94,14 +71,36 @@ const Expense = () => {
     }
   };
 
-  const premiumHandler = async () => {
+  const premiumHandler =async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get("api/purchase/premiummembership", {
-        headers: { Authorization: token },
+      const response = await axios.get("api/purchase/premiummembership", {
+        headers: { "Authorization": token },
       });
-      console.log("premium handler");
-      console.log(res);
+     
+     console.log(response)
+      var options = {
+        "key": response.data.key_id,
+        "order_id":response.data.order.id,
+       "handler": async function (response){
+        const premiumStatus = await axios.post('api/purchase/updatetransaction',{
+          order_id: options.order_id,
+          payment_id: response.razorpay_payment_id, 
+        },{
+          headers: {"Authorization": token}
+        })
+        console.log("you are a premium member now")
+        console.log(response)
+       }
+       
+      }
+ 
+      const rzp1 = new window.Razorpay(options);
+      rzp1.open();
+      rzp1.on('payment.failed', function(response){
+        console.log(response)
+        console.log('something went wrong')
+      })
     } catch (err) {
       console.log("error premium in expense", err);
     }
@@ -143,7 +142,7 @@ const Expense = () => {
           onChange={(e) => setType(e.target.value)}
           className="form-select"
         >
-          <option disabled selected value="">
+          <option disabled selected value=''>
             Select Item
           </option>
           <option value="Groceries">Groceries</option>
@@ -159,8 +158,8 @@ const Expense = () => {
         <button type="submit">Add Expense</button>
       </form>
       {!loading && (
-        <p className="premium" onClick={premiumHandler}>
-          for premium features click here..<button>Premium</button>
+        <p className="premium" >
+          for premium features click here..<button onClick={premiumHandler}>Premium</button>
         </p>
       )}
       {loading ? (
