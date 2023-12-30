@@ -13,6 +13,19 @@ const Expense = () => {
   const [list, setList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [premium,setPremium] = useState(false);
+  const [leader,setLeader] = useState(false)
+  const [leaderboard,setLeaderboard] = useState([])
+
+  function parseJwt (token) {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    return JSON.parse(jsonPayload);
+}
 
   const handleInputChange = useCallback((e, setValue) => {
     setValue(e.target.value);
@@ -45,6 +58,10 @@ const Expense = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
+      const decodeToken = parseJwt(token)
+      if(decodeToken.ispremiumuser){
+        setPremium(true);
+      }
       const res = await axios.get("api/expense/getExpense", {
         headers: { "Authorization": token },
       });
@@ -90,6 +107,7 @@ const Expense = () => {
           headers: {"Authorization": token}
         })
         console.log("you are a premium member now")
+        setPremium(true)
         console.log(response)
        }
        
@@ -104,6 +122,22 @@ const Expense = () => {
     } catch (err) {
       console.log("error premium in expense", err);
     }
+
+}
+
+//leaderboard
+const leaderboardHandler=async()=>{
+  try{
+    const token = localStorage.getItem("token");
+    setLeader(!leader);
+     const res = await axios.get('api/premium/getPremium',{
+      headers: {'Authorization':token}
+     })
+      console.log(res.data)
+      setLeaderboard(res.data)
+  }catch(err){
+    alert(err)
+  }
 
 }
 
@@ -157,11 +191,18 @@ const Expense = () => {
         </select>
         <button type="submit">Add Expense</button>
       </form>
-      {!loading && (
+      {!loading && !premium && (
         <p className="premium" >
           for premium features click here..<button onClick={premiumHandler}>Premium</button>
         </p>
       )}
+      {
+        !loading && premium && (
+          <p className="premium" >
+          you are a premium user ..<button onClick={leaderboardHandler}>Leaderboard</button>
+        </p>
+        )
+      }
       {loading ? (
         <p>Loading...</p>
       ) : (
@@ -180,7 +221,20 @@ const Expense = () => {
           </ul>
         </div>
       )}
+      {leader && <div className="list-container">
+        <h2>Leaderboard :</h2>
+        <ul>
+        {leaderboard.map((item,index)=>{
+           return <li key={index} className="list-items">
+            {item.name} : {item.total_cost}
+          
+          </li>
+        })}
+        </ul>
+        </div>
+        }
     </div>
+
   );
 };
 
