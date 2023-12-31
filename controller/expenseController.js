@@ -1,15 +1,22 @@
 const db = require('../model');
 const Expense = db.expenses;
-
+const User = db.users;
 
 const addExpense = async(req,res)=>{
 try{
     const {name,price,type} = req.body;
+    console.log(req.body)
     const user = req.user;
-    user.createExpense({
+    await user.createExpense({
         name: name,
         price: price,
         type: type,
+    })
+    const totalExpense = Number(req.user.totalexpense)+Number(price)
+    User.update({
+        totalexpense: totalExpense
+    },{
+        where: {id: user.id}
     })
     res.status(200).json({message:'Data succesfully added'});
 //     const userId = req.user.id;

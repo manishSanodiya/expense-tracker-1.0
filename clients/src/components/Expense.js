@@ -226,7 +226,7 @@ const leaderboardHandler=async()=>{
         <ul>
         {leaderboard.map((item,index)=>{
            return <li key={index} className="list-items">
-            {item.username} : {item.total_cost}
+            {item.username} : {item.totalexpense}
           
           </li>
         })}
