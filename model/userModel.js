@@ -20,7 +20,12 @@ module.exports = (sequelize,DataTypes) =>{
             allowNull: false,
         },
         ispremiumuser:{
-            type:DataTypes.BOOLEAN
+            type:DataTypes.BOOLEAN,
+            defaultValue: false
+        },
+        totalexpense:{
+            type: DataTypes.INTEGER,
+            defaultValue:0.00
         }
 
     });
