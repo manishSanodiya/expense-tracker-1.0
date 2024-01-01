@@ -60,7 +60,7 @@ const Expense = () => {
       const token = localStorage.getItem("token");
       const decodeToken = parseJwt(token)
       if(decodeToken.ispremiumuser){
-        setPremium(true);
+        setPremium(!premium);
       }
       const res = await axios.get("api/expense/getExpense", {
         headers: { "Authorization": token },
@@ -133,6 +133,7 @@ const leaderboardHandler=async()=>{
      const res = await axios.get('api/premium/getPremium',{
       headers: {'Authorization':token}
      })
+     
       console.log(res.data)
       setLeaderboard(res.data)
   }catch(err){
@@ -221,7 +222,7 @@ const leaderboardHandler=async()=>{
           </ul>
         </div>
       )}
-      {leader && <div className="list-container">
+      {premium && leader && <div className="list-container">
         <h2>Leaderboard :</h2>
         <ul>
         {leaderboard.map((item,index)=>{
