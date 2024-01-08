@@ -5,6 +5,7 @@ const userRoutes = require('./routes/userRoutes');
 const expenseRoutes = require("./routes/expenseRoutes")
  const purchaseRouter = require('./routes/purchase')
 const premiumRouter = require('./routes/premiumFeature');
+const frogotPassword = require('./routes/forgotPassword')
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use('/api/user',userRoutes);
 app.use('/api/expense',expenseRoutes);
  app.use('/api/purchase',purchaseRouter);
  app.use('/api/premium',premiumRouter);
+ app.use('/api/password',frogotPassword);
 
 app.use('/',(req,res,next)=>{
     res.send({

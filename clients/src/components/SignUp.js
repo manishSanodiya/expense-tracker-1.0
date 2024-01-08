@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './LoginForm.css'; // Import your CSS file
 import axios from "axios";
+import { Link } from 'react-router-dom';
 
 const SignUp = () => {
   const [username, setUsername] = useState('');
@@ -16,7 +17,7 @@ const SignUp = () => {
   const submitHandler = async(e) => {
     e.preventDefault();
    try{
-   let res = await axios.post('api/user/addUser', logInfo)
+       await axios.post('api/user/addUser', logInfo)
      setUsername('')
      setEmail('')
      setPassword('')
@@ -66,6 +67,8 @@ const SignUp = () => {
         <button className='form-button' type='submit'>
           Sign Up
         </button>
+        <Link to='/login'>Allready have an account<button>sign-in</button></Link>
+
       </form>
     </div>
   );
