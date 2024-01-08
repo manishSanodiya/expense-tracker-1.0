@@ -6,6 +6,7 @@ import Login from './components/Login';
 import SignUp from './components/SignUp';
 import Navbar from './components/Navbar';
 import Expense from './components/Expense';
+import ForgotPassword from './components/ForgotPassword';
 
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
       <Route path='/login' element={<Login />}/>
       <Route path='/' element={<Login />}/>
       <Route path='/expense' element={<Expense />}/>
+      <Route path='/forgotpassword' element={<ForgotPassword />}/>
     </Routes>
     </>
   );
