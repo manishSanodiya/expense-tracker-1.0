@@ -26,7 +26,7 @@ const addUser = async (req,res)=>{
         bcrypt.hash(password,saltrounds, async(err, hash)=>{
       
             const newUser = await User.create({username,email,password:hash});
-            res.status(201).send(newUser).json({message:"account created successfully"})
+            res.status(201).json({message:"account created successfully"})
         })
     }catch(error){
         res.status(500).json({error: error.message});

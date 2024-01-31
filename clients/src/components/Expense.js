@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import "./expense.css";
+import MonthlyYearly from "./MonthlyYearly";
 
 
 
@@ -232,8 +233,18 @@ const leaderboardHandler=async()=>{
           </li>
         })}
         </ul>
+       
         </div>
         }
+           {!loading && premium && (
+         <MonthlyYearly/>
+      )}
+       
+         {!loading && premium && (
+        <p className="download" >
+          to download expenses click here..<button >Download</button>
+        </p>
+      )}
     </div>
 
   );

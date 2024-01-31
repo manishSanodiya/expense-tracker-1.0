@@ -22,12 +22,16 @@ db.Sequelize = Sequelize;
 db.users = require("./userModel")(sequelize,DataTypes)
 db.expenses = require("./expenseModel")(sequelize,DataTypes)
 db.orders = require('./orderModel')(sequelize,DataTypes)
+db.forgotpasswords = require('./forgotPassword')(sequelize,DataTypes)
 
 db.users.hasMany(db.expenses);
 db.expenses.belongsTo(db.users);
 
 db.users.hasMany(db.orders)
 db.orders.belongsTo(db.users);
+
+db.users.hasMany(db.forgotpasswords);
+db.forgotpasswords.belongsTo(db.users);
 
 db.sequelize.sync({force : false})
 .then(()=>{

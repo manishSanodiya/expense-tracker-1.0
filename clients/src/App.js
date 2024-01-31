@@ -7,6 +7,7 @@ import SignUp from './components/SignUp';
 import Navbar from './components/Navbar';
 import Expense from './components/Expense';
 import ForgotPassword from './components/ForgotPassword';
+import ResetPassword from './components/ResetPassword';
 
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
       <Route path='/' element={<Login />}/>
       <Route path='/expense' element={<Expense />}/>
       <Route path='/forgotpassword' element={<ForgotPassword />}/>
+      <Route path='/resetpassword:id' element={<ResetPassword/>} />
     </Routes>
     </>
   );
