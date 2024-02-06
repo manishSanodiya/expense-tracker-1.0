@@ -1,11 +1,9 @@
 import React from 'react'
+
 import './table.css'
-const MonthlyYearly = () => {
-    const tableData = [
-        { id: 1, name: 'John Doe', age: 25, occupation: 'Developer' },
-        { id: 2, name: 'Jane Smith', age: 30, occupation: 'Designer' },
-        { id: 3, name: 'Bob Johnson', age: 28, occupation: 'Tester' },
-      ];
+const MonthlyYearly = ({data}) => {
+    console.log(data)
+   
     
       return (
         <div className="table-container">
@@ -20,12 +18,12 @@ const MonthlyYearly = () => {
               </tr>
             </thead>
             <tbody>
-              {tableData.map((row) => (
+              {data.map((row,index) => (
                 <tr key={row.id}>
-                  <td>{row.id}</td>
+                  <td>{index}</td>
                   <td>{row.name}</td>
-                  <td>{row.age}</td>
-                  <td>{row.occupation}</td>
+                  <td>{row.price}</td>
+                  <td>{row.type}</td>
                 </tr>
               ))}
             </tbody>
@@ -41,12 +39,12 @@ const MonthlyYearly = () => {
               </tr>
             </thead>
             <tbody>
-              {tableData.map((row) => (
+              {data.map((row,index) => (
                 <tr key={row.id}>
-                  <td>{row.id}</td>
+                  <td>{index}</td>
                   <td>{row.name}</td>
-                  <td>{row.age}</td>
-                  <td>{row.occupation}</td>
+                  <td>{row.price}</td>
+                  <td>{row.type}</td>
                 </tr>
               ))}
             </tbody>
@@ -54,4 +52,4 @@ const MonthlyYearly = () => {
         </div>
       );
     };
-export default MonthlyYearly
+export default MonthlyYearly;

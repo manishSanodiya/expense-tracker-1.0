@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import "./expense.css";
 import MonthlyYearly from "./MonthlyYearly";
+import DownloadHistory from "./DownloadHistory";
 
 
 
@@ -89,6 +90,8 @@ const Expense = () => {
     }
   };
 
+
+  //premium handler
   const premiumHandler =async () => {
     try {
       const token = localStorage.getItem("token");
@@ -143,6 +146,28 @@ const leaderboardHandler=async()=>{
 
 }
 
+//download expense 
+const downloadHandle = ()=>{
+  const token = localStorage.getItem("token");
+axios.get('api/user/download', {headers: {'Authorization':token}})
+  .then((response) => {
+    if(response.status === 200){
+        //the bcakend is essentially sending a download link
+        //  which if we open in browser, the file would download
+        console.log(response)
+        var a = document.createElement("a");
+        a.href = response.data.fileUrl;
+        a.download = 'myexpense.csv';
+        a.click();
+    } else {
+        throw new Error(response.data.message)
+    }
+
+})
+.catch((err) => {
+  alert(err)
+});
+}
   
 
   useEffect(() => {
@@ -237,13 +262,17 @@ const leaderboardHandler=async()=>{
         </div>
         }
            {!loading && premium && (
-         <MonthlyYearly/>
+         <MonthlyYearly data={list}/>
       )}
        
          {!loading && premium && (
         <p className="download" >
-          to download expenses click here..<button >Download</button>
+          to download expenses click here..<button onClick={downloadHandle}>Download</button>
         </p>
+      )}
+
+{!loading && premium && (
+       <DownloadHistory premium={premium} />
       )}
     </div>
 

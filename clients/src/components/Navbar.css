@@ -1,0 +1,36 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #979090;
+    color: #fff;
+    margin-bottom: 20px;
+  }
+  
+  .left-section h1 {
+    margin: 0;
+  }
+  
+  .right-section a {
+    color: #fff;
+    text-decoration: none;
+    margin-left: 20px;
+  }
+  
+  /* Media Query for responsiveness */
+  @media screen and (max-width: 768px) {
+    .navbar {
+      flex-direction: column;
+    }
+  
+    .right-section {
+      margin-top: 10px;
+      text-align: center;
+    }
+  
+    .right-section a {
+      display: block;
+      margin: 5px 0;
+    }
+  }
