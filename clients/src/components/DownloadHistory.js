@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import axios from 'axios';
 
-const DownloadHistory = (props) => {
+const DownloadHistory = ({premium}) => {
     const [click,setClick] = useState(false)
     const [downloadlist,setDownloadlist] = useState([])
 
@@ -22,7 +22,7 @@ const DownloadHistory = (props) => {
     <>
     <button onClick={downloadHistory}>Download History</button>
      <h3>Download History</h3>
-      {click && props.premium && downloadlist.map((data,index)=>{
+      {click && premium && downloadlist.map((data,index)=>{
         return <p key={data.id}> {index} -- {data.downloadUrl}</p>
       })}
 

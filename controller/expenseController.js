@@ -83,10 +83,22 @@ const addExpense = async (req, res) => {
 
 const getExpense = async (req, res) => {
   try {
+    const page = parseInt(req.query.page)
+    console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",page)
+    const limit = parseInt(req.query.limit)
+    const startIndex = (page-1)*5;
+    const endIndex = page*5
+    const result = {}
+
+
     const user = req.user;
-    const expenses = await Expense.findAll({ where: { userId: user.id } });
-    //const expenses = await Expense.findAll();
-    res.status(200).send(expenses);
+    const expenses = await Expense.findAll({ where: { userId: user.id }, limit: limit, offset:startIndex });
+  
+    res.status(200).json({
+      expenses: expenses,
+      hasMoreExpenses: expenses.length===limit,
+      hasPreviousExpenses: page>1
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
