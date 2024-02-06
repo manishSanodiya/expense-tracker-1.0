@@ -63,16 +63,17 @@ const Expense = () => {
     }
   };
 
-  const getExpense = useCallback(async () => {
+  const getExpense = useCallback(async (page) => {
     setLoading(true);
     try {
       let limit = 5;
+      let current = page;
       const token = localStorage.getItem("token");
       const decodeToken = parseJwt(token);
       if (decodeToken.ispremiumuser) {
         setPremium(!premium);
       }
-      const res = await axios.get(`api/expense/getExpense?page=${currentPage}&limit=${limit}`, {
+      const res = await axios.get(`api/expense/getExpense?page=${current}&limit=${limit}`, {
         headers: { Authorization: token },
       });
       console.log(res.data);
@@ -190,26 +191,18 @@ const Expense = () => {
   //pagination
   const previousPage = ()=>{
     setCurrentPage(currentPage-1);
-    getExpense();
+    getExpense(currentPage-1);
   }
   const nexPage = ()=>{
-   new Promise((resolve,reject)=>{setCurrentPage(currentPage+1)
-   resolve()}
-   )
-   .then(()=>{
-    getExpense();
-   })
-   .catch((err)=>{
-    console.log(err)
-   })
+  setCurrentPage(currentPage+1)
 
-    
+  getExpense(currentPage + 1);
   }
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      getExpense();
+      getExpense(currentPage);
     }
   }, [getExpense]);
 
