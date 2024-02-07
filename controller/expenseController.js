@@ -1,4 +1,4 @@
-const { CompaniesApi } = require("sib-api-v3-sdk");
+
 const db = require("../model");
 const Expense = db.expenses;
 const User = db.users;
@@ -84,11 +84,11 @@ const addExpense = async (req, res) => {
 const getExpense = async (req, res) => {
   try {
     const page = parseInt(req.query.page)
-    console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",page)
+   
     const limit = parseInt(req.query.limit)
     const startIndex = (page-1)*5;
     const endIndex = page*5
-    const result = {}
+
 
 
     const user = req.user;
